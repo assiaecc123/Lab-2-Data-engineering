@@ -5,7 +5,6 @@ with source as (
 ),
 
 renamed as (
-    -- 'distinct' ensures each review_id is unique, satisfying our dbt test
     select distinct
         md5(concat(appId, content)) as review_id,
         appId as app_id,
@@ -13,9 +12,7 @@ renamed as (
         content as review_text,
         score as rating,
         thumbsUpCount as thumbs_up,
-        "at" as review_date, 
-        replyContent as reply_content,
-        repliedAt as replied_at
+        "at" as review_date
     from source
 )
 

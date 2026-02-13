@@ -5,11 +5,10 @@ with apps as (
 )
 
 select
-    app_id,           -- The unique ID for each app
+    app_id,
     app_name,
     category,
     rating,
     reviews_count,
-    installs,
     developer
 from apps

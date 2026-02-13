@@ -1,29 +1,17 @@
 {{ config(materialized='view') }}
 
 with source as (
-    -- Reads directly from your raw JSON file
     select * from read_json_auto('raw_data/apps_catalog.json')
 ),
 
 renamed as (
-    select
-        -- Mapping your specific JSON keys (appId, title, score, etc.)
+    select distinct
         appId as app_id,
-        title as app_name,
-        summary as summary,
-        installs as installs,
-        minInstalls as min_installs,
+        title as app_name,  -- This fixes the "app_name not found" error
+        genre as category,
         score as rating,
         ratings as reviews_count,
-        price as price,
-        free as is_free,
-        currency as currency,
-        developer as developer,
-        developerId as developer_id,
-        genre as category,
-        released as released_date,
-        updated as last_updated,
-        version as current_ver
+        developer
     from source
 )
 
