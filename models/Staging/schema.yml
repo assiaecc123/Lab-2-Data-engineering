@@ -2,19 +2,22 @@ version: 2
 
 models:
   - name: stg_playstore_apps
-    description: "Cleaned and standardized apps data from the Play Store."
     columns:
       - name: app_id
-        description: "Primary key (surrogate) for the apps table."
         tests:
           - unique
           - not_null
 
   - name: stg_playstore_reviews
-    description: "Cleaned and standardized user reviews."
     columns:
       - name: review_id
-        description: "Primary key (surrogate) for the reviews table."
         tests:
           - unique
           - not_null
+      - name: app_id
+        tests:
+          - not_null
+          # This ensures referential integrity (no "orphan" reviews)
+          - relationships:
+              to: ref('stg_playstore_apps')
+              field: app_id
