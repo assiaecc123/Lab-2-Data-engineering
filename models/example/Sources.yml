@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: raw_layer
+    schema: main  # In DuckDB, files often default to the 'main' schema or read directly
+    tables:
+      - name: raw_apps
+        description: "Raw apps data from JSON"
+        meta:
+          external_location: "raw_data/apps_catalog.json"
+      
+      - name: raw_reviews
+        description: "Raw reviews data from JSON"
+        meta:
+          external_location: "raw_data/apps_reviews.json"

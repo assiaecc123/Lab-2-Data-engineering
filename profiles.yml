@@ -1,0 +1,7 @@
+playstore_pipeline:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: 'playstore.duckdb'
+      threads: 1
