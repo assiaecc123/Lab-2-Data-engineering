@@ -5,15 +5,20 @@ with source as (
 ),
 
 renamed as (
-    select distinct
-        md5(concat(appId, content)) as review_id,
+    select 
+        md5(concat(appId, content, "at")) as review_id, -- Added "at" (timestamp) to make the ID more unique
         appId as app_id,
         userName as user_name,
         content as review_text,
         score as rating,
         thumbsUpCount as thumbs_up,
-        "at" as review_date
+        "at" as review_date,
+        -- This ranks duplicates so we can filter them out
+        row_number() over (partition by appId, content, "at" order by score desc) as row_num
     from source
 )
 
-select * from renamed
+-- Only keep the first occurrence of any duplicate
+select * exclude (row_num)
+from renamed
+where row_num = 1
