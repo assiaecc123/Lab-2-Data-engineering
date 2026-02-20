@@ -1,10 +1,50 @@
-- name: fact_reviews
+version: 2
+
+models:
+  - name: dim_categories
+    columns:
+      - name: category_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_developers
+    columns:
+      - name: developer_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_apps
+    columns:
+      - name: app_id
+        tests:
+          - unique
+          - not_null
+      - name: category_id
+        tests:
+          - relationships:
+              to: ref('dim_categories')
+              field: category_id
+      - name: developer_id
+        tests:
+          - relationships:
+              to: ref('dim_developers')
+              field: developer_id
+
+  - name: dim_apps_scd
+    columns:
+      - name: app_sk
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_reviews
     columns:
       - name: review_id
         tests:
           - unique
           - not_null
-      # Testing referential integrity using the Surrogate Key
       - name: app_sk
         tests:
           - relationships:
