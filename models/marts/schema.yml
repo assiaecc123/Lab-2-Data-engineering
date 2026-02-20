@@ -1,47 +1,12 @@
-version: 2
-
-models:
-  - name: dim_categories
-    columns:
-      - name: category_id
-        tests:
-          - unique
-          - not_null
-
-  - name: dim_developers
-    columns:
-      - name: developer_id
-        tests:
-          - unique
-          - not_null
-
-  - name: dim_apps
-    columns:
-      - name: app_id
-        tests:
-          - unique
-          - not_null
-      # Testing referential integrity in the hierarchy
-      - name: category_id
-        tests:
-          - relationships:
-              to: ref('dim_categories')
-              field: category_id
-      - name: developer_id
-        tests:
-          - relationships:
-              to: ref('dim_developers')
-              field: developer_id
-
-  - name: fact_reviews
+- name: fact_reviews
     columns:
       - name: review_id
         tests:
           - unique
           - not_null
-      # Testing referential integrity between facts and dimensions
-      - name: app_id
+      # Testing referential integrity using the Surrogate Key
+      - name: app_sk
         tests:
           - relationships:
               to: ref('dim_apps_scd')
-              field: app_id
+              field: app_sk

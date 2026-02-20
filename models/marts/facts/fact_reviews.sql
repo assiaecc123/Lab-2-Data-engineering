@@ -13,19 +13,17 @@ apps_history as (
 
 select
     r.review_id,
-    r.app_id,
+    a.app_sk, -- Replacing the natural key with the Dimension's Surrogate Key
     cast(strftime(cast(r.review_date as date), '%Y%m%d') as integer) as review_date_key,
     r.rating,
     r.thumbs_up,
     r.review_date
 from reviews r
 inner join apps_history a 
-    on r.app_id = a.app_id
-    -- Cast the string to a timestamp for comparison
+    on r.app_id = a.app_id -- Using the natural key to retrieve the surrogate key
     and cast(r.review_date as timestamp) >= a.valid_from 
     and (a.valid_to is null or cast(r.review_date as timestamp) < a.valid_to)
 
 {% if is_incremental() %}
-  -- Cast here as well for the incremental logic
   where cast(r.review_date as timestamp) > (select max(cast(review_date as timestamp)) from {{ this }})
 {% endif %}
