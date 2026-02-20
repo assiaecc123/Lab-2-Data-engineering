@@ -7,8 +7,8 @@ with apps as (
 select
     app_id,
     app_name,
-    category,
+    md5(category) as category_id,
+    md5(developer) as developer_id,
     rating,
-    reviews_count,
-    developer
+    reviews_count
 from apps
