@@ -19,13 +19,13 @@ select
     r.thumbs_up,
     r.review_date
 from reviews r
--- The True Historical Join:
 inner join apps_history a 
     on r.app_id = a.app_id
-    -- This ensures we match the review to the app's category exactly as it was on that specific date
-    and r.review_date >= a.valid_from 
-    and (a.valid_to is null or r.review_date < a.valid_to)
+    -- Cast the string to a timestamp for comparison
+    and cast(r.review_date as timestamp) >= a.valid_from 
+    and (a.valid_to is null or cast(r.review_date as timestamp) < a.valid_to)
 
 {% if is_incremental() %}
-  where r.review_date > (select max(review_date) from {{ this }})
+  -- Cast here as well for the incremental logic
+  where cast(r.review_date as timestamp) > (select max(cast(review_date as timestamp)) from {{ this }})
 {% endif %}
