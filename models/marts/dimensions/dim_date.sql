@@ -1,11 +1,20 @@
-{{ config(materialized='table') }}
+﻿{{ config(materialized='table') }}
 
-with date_spine as (
-    select 
-        cast(range as date) as date_day
-    from range(cast('2024-01-01' as date), cast('2026-12-31' as date), interval '1 day')
+with review_dates as (
+    select
+        cast(min(review_date) as date) as min_date,
+        cast(max(review_date) as date) as max_date
+    from {{ ref('stg_playstore_reviews') }}
+),
+date_spine as (
+    select cast(range as date) as date_day
+    from review_dates,
+    range(
+        cast(min_date as timestamp),
+        cast(max_date + interval '1 day' as timestamp),
+        interval '1 day'
+    )
 )
-
 select
     cast(strftime(date_day, '%Y%m%d') as integer) as date_key,
     date_day as full_date,
